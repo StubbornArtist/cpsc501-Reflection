@@ -1,29 +1,37 @@
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+
 
 public class InspectedField extends InspectedMember{
+
+	private Object value;
 	
-	private String type;
-	
-	public InspectedField(Field field) {
+	public InspectedField(Field field, InspectedObject container) {
+		
 		super(field);
-		setType(field.getType().getName());
+		field.setAccessible(true);
+		try {
+			
+			Object temp = field.get(container.getBaseObject());
+			
+			if(container.isRecursive() && !(temp == null)) {
+				value = InspectedObject.create(container, temp);
+			}
+			else {
+				value = temp;
+			}
+			
+		}
+		catch(IllegalAccessException e) {
+			
+			throw new RuntimeException("Field inaccessible : unexpected error");
+		}	
 	}
 	
-	
-	public void setType(String type) {
-		this.type = type;
-	}
-	
-	public String getType() {
-		return type;
-	}
 	
 	@Override
 	public String toString() {
 		
-		return super.toString() + 
-				"\nType : " + getType(); 
+		return super.toString() +
+				"\nValue : " + value;
 	}
-
 }

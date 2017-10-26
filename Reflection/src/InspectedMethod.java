@@ -1,42 +1,32 @@
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
-public class InspectedMethod extends InspectedConstructor<Method>{
+public class InspectedMethod extends InspectedExecutable{
 	
 	private String returnType;
-	private ArrayList<String> exceptions;
+	private ArrayList<String> exceptionTypes;
 	
-	
-	public InspectedMethod(Method method) {
+	public InspectedMethod(Method m) {
+		super(m);
+				
+		returnType = m.getReturnType().getName();
 		
-		super(method);
-		setReturnType(method.getReturnType().getName());
-		
-		exceptions = new ArrayList<String>();
-		for(Class<?> e : method.getExceptionTypes()) {
-			addException(e.getName());
+		exceptionTypes = new ArrayList<String>();
+		for(Class<?> e : m.getExceptionTypes()) {
+			exceptionTypes.add(e.getName());
 		}
 		
 	}
-		
-	public String getReturnType() {
-		return returnType;
-	}
 	
-	public void setReturnType(String returnType) {
-		this.returnType = returnType;
-	}
-		
-	public void addException(String exception) {
-		exceptions.add(exception);
-	}
-			
 	@Override
 	public String toString() {
+		String result = super.toString() + "\nReturn Type : " + returnType;
 		
-		return super.toString() + 
-				"\nReturn Type : " + getReturnType() + 
-				"\nExceptions : " + exceptions;
+		if(!exceptionTypes.isEmpty())
+			result += "\nExceptions : " + exceptionTypes;
+		
+		return result;
+				
 	}
+	
 }

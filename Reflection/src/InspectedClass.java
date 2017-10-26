@@ -3,84 +3,96 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-public class InspectedClass {
+public class InspectedClass extends InspectedObject{
 
-	private String name;
 	private ArrayList<InspectedMethod> methods;
 	private ArrayList<InspectedField> fields;
-	private ArrayList<InspectedConstructor<Constructor>> constructors;
-	private ArrayList<InspectedClass> interfaces;
-	private InspectedClass superClass;
+	private ArrayList<InspectedObject> interfaces;
+	private ArrayList<InspectedExecutable> constructors;
+	private InspectedObject superClass;
 
+	public InspectedClass(Object baseObj, boolean recursive) {
+		super(baseObj, recursive);
+		init();
+	}
 	
+	public InspectedClass(InspectedClass parent, Class<?> classLevel) {
+		super(parent, classLevel);
+		init();
+	}
 	
-	public InspectedClass(Class<?> obj) {
+	public InspectedClass(InspectedObject parent, Object obj) {
+		super(parent, obj);
+		init();
+	}
+	
+	private void init() {
 		
-		setName(obj.getName());
-			
-		methods = new ArrayList<InspectedMethod>();
-		for(Method m : obj.getDeclaredMethods()) {
-			addMethod(new InspectedMethod(m));
+		Class<?> level = getClassLevel();
+		interfaces = new ArrayList<InspectedObject>();
+		for(Class<?> i : level.getInterfaces()) {
+			if(!isReferenced(i)) {
+				interfaces.add(new InspectedClass(this, i));
+			}
+			else {
+				interfaces.add(new InspectedObject(this, i));
+			}	
 		}
+		
+		Class<?> superDef = level.getSuperclass();
+		if(!(superDef == null)) {
+			if(!isReferenced(superDef)) {
+				superClass = new InspectedClass(this, superDef);
+			}
+			else {
+				superClass = new InspectedObject(this, superDef);
+			}
+		}	
+			
 		fields = new ArrayList<InspectedField>();
-		for(Field f : obj.getFields()) {
-			addField(new InspectedField(f));
-		}
-		constructors = new ArrayList<InspectedConstructor<Constructor>>();
-		for(Constructor<?> c : obj.getDeclaredConstructors()) {
-			addConstructor(new InspectedConstructor<Constructor>(c));
-		}
-		interfaces = new ArrayList<InspectedClass>();
-		for(Class<?> i : obj.getInterfaces()) {
-			addInterface(new InspectedClass(i));
+		for(Field f : level.getDeclaredFields()) {
+			fields.add(new InspectedField(f, this));
 		}
 		
-		setSuper((obj.getSuperclass() == null) ? null 
-				: new InspectedClass(obj.getSuperclass()));
+		methods = new ArrayList<InspectedMethod>();
+		for(Method m : level.getDeclaredMethods()) {
+			methods.add(new InspectedMethod(m));
+		}
+		
+		constructors = new ArrayList<InspectedExecutable>();
+		for(Constructor<?> c : level.getDeclaredConstructors()) {
+			constructors.add(new InspectedExecutable(c));
+		}
 		
 	}
 		
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public String getName() {
-		return name;
-	}
+	private <T extends Object> String membersToString(ArrayList<T> members) {
+		String result ="\n\n";
+		
+		for(Object o : members) {
+			result += StringExtensions.indent(o.toString()) + "\n\n";
 			
-	public void addMethod(InspectedMethod method) {
-		methods.add(method);
+		}
+		return result;
 	}
 		
-	public void addField(InspectedField field) {
-		fields.add(field);
-	}
-	
-	public void addConstructor(InspectedConstructor<Constructor> constructor) {
-		constructors.add(constructor);
-	}
-	
-	public void setSuper(InspectedClass superClass) {
-		this.superClass = superClass;
-	}
-	
-	public InspectedClass getSuper() {
-		return superClass;
-	}
-	
-	public void addInterface(InspectedClass obj) {
-		interfaces.add(obj);
-	}
-	
-	
 	@Override
 	public String toString() {
-
-		return "\nName : " + getName() + 
-				"\nMethods : " + methods +
-				"\nFields : " + fields +
-				"\nSuper Class :\n===============================" + getSuper() +
-				"\nInterfaces : \n===============================" + interfaces;
+		
+		String result = super.toString();
+		if(!fields.isEmpty())
+			result += "\nFields : " + membersToString(fields); 
+		if(!methods.isEmpty())
+			result += "\nMethods : " + membersToString(methods);
+		if(!constructors.isEmpty())
+			result += "\nConstructors : " + membersToString(constructors);
+		if(!interfaces.isEmpty())
+			result += "\nInterfaces : " + membersToString(interfaces);
+		if(superClass != null) 
+			result += "\nSuper Class : \n" + StringExtensions.indent(superClass.toString());
+			
+		return result;
 	}
+
 	
 }

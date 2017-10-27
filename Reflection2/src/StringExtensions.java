@@ -9,7 +9,7 @@ public class StringExtensions {
 		return indent(str, 1);
 	}
 	
-	public static String repeat(String str, int num) {
+	private static String repeat(String str, int num) {
 		String result = "";
 		for(int i = 0; i < num; i++) {
 			result += str;

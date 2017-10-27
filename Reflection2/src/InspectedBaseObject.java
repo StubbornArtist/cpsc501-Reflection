@@ -27,6 +27,8 @@ public class InspectedBaseObject {
 		this.recursive = parent.isRecursive();
 	}
 	
+	
+	
 	public static InspectedBaseObject create(InspectedBaseObject parent, InspectedClass type){
 		if(!(parent == null) && parent.hasReference(type)){
 			return new InspectedBaseObject(parent, type);
@@ -35,7 +37,12 @@ public class InspectedBaseObject {
 		return new InspectedObject(parent, type);
 	}
 	
+	
+	
 	public static InspectedBaseObject create(InspectedBaseObject parent, Object obj){
+		
+		if(obj == null) return null;
+		
 		Class<?> objClass = obj.getClass();
 		
 		if(objClass.isArray()){
@@ -62,6 +69,8 @@ public class InspectedBaseObject {
 		
 		return new InspectedObject(obj, recursive);
 	}
+	
+	
 	
 	public Object getBase(){
 		

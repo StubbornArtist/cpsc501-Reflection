@@ -18,27 +18,18 @@ public class InspectedArray extends InspectedObject{
 	public ArrayList<InspectedBaseObject> getMembers(){
 		ArrayList<InspectedBaseObject> members = new ArrayList<InspectedBaseObject>();
 		for(int i = 0; i < length; i++) {
-			Object obj = Array.get(getBase(), i);
-			members.add(InspectedBaseObject.create(this, obj));
+			members.add(InspectedBaseObject.create(this, Array.get(getBase(), i)));
 		}
 		
 		return members;
-	}
-	
-	
-	private String membersToString(){
-		String result = "\n\n";
-		for(InspectedBaseObject obj : getMembers()){
-			result += obj + "\n\n";
-		}
-		return result;
 	}
 	
 	@Override
 	public String toString(){
 		String result = super.toString() + "\nLength : " + length;
 		if(length > 0) {
-			result += "\nMembers : " + StringExtensions.indent(membersToString());
+			String members = StringExtensions.lineSeperatedString(getMembers());
+			result += "\nMembers : " + StringExtensions.indent(members);
 		}
 		return result;
 	}

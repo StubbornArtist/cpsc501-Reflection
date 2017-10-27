@@ -48,25 +48,6 @@ public class InspectedObject extends InspectedBaseObject {
 		return field + "\n" + create(this, value);
 	}
 	
-	
-	
-	private <T extends Object> String membersToString(ArrayList<T> members) {
-		String result ="\n\n";
-		
-		for(Object o : members) {
-			String val;
-			if(o == null) {
-				val = "null";
-			}
-			else {
-				val = o.toString();
-			}
-			result += StringExtensions.indent(val) + "\n\n";
-			
-		}
-		return result;
-	}
-	
 	@Override
 	public String toString(){
 		String result = super.toString();
@@ -74,7 +55,8 @@ public class InspectedObject extends InspectedBaseObject {
 			result+= "\nFields : " + StringExtensions.indent(fieldsToString());
 		}
 		if(getType().hasInterfaces()) {
-			result+= "\nInterfaces : " + membersToString(getInterfaces());
+			String interfaces = StringExtensions.lineSeperatedString(getInterfaces());
+			result+= "\nInterfaces : " + StringExtensions.indent(interfaces);
 		}
 		if(getType().hasSuperClass()) {
 			InspectedBaseObject superClass = create(this, getType().getSuperClass());

@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class StringExtensions {
 	
@@ -15,6 +17,18 @@ public class StringExtensions {
 			result += str;
 		}
 		return result;
+	}
+	
+	public static <T extends Object> String lineSeperatedString(Collection<T> list){
+		if(list.isEmpty()) return "";
+		
+		String result ="\n\n";
+		
+		for(T ele : list) {
+			result += ((ele == null)? "null" : ele.toString()) + "\n\n";	
+		}
+		return result;
+		
 	}
 
 }

@@ -94,27 +94,17 @@ public class InspectedClass {
 		return base != null && base.equals(((InspectedClass) obj).getType());
 	}
 	
-	
-	private <T extends Object> String membersToString(ArrayList<T> members) {
-		String result ="\n\n";
-		
-		for(Object o : members) {
-			result += StringExtensions.indent(o.toString()) + "\n\n";
-			
-		}
-		return result;
-	}
-		
-	
 	@Override
 	public String toString(){
 		String result = "Type : " + base.getName();
 		
 		if(hasMethods()) {
-			result += "\nMethods : "  + membersToString(methods);
+			String methodString = StringExtensions.lineSeperatedString(methods);
+			result += "\nMethods : " + StringExtensions.indent(methodString);
 		}
 		if(hasConstructors()) {
-			result += "\nConstructors : " + membersToString(constructors);
+			String constructorString = StringExtensions.lineSeperatedString(constructors);
+			result += "\nConstructors : " + StringExtensions.indent(constructorString);
 		}	
 		return result;
 	}

@@ -19,6 +19,10 @@ public class InspectedClass {
 		return base;
 	}
 	
+	public String getName() {
+		return base.getName();
+	}
+	
 	public ArrayList<InspectedMethod> getMethods(){
 		ArrayList<InspectedMethod> methods = new ArrayList<InspectedMethod>();
 		for(Method m : base.getDeclaredMethods()){

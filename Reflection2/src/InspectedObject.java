@@ -28,28 +28,25 @@ public class InspectedObject extends InspectedBaseObject {
 	private String fieldsToString() {
 		String result = "\n\n";
 		for(InspectedField f : getType().getFields()) {
-			result += f + "\nValue : ";
-			
-			Object value = f.getObject(getBase());
-			
-			if(isRecursive()) {
-				InspectedBaseObject obj; 
-				if(value == null) {
-					obj = null;
-				}
-				else {
-					obj = create(this, value);
-				}
-				result +=  "\n" + obj;
-			}
-			else {
-				result += value;
-			}
+			result += fieldValue(f);
 			result += "\n\n";
 		}
 		return result;
 	}
 	
+	
+	private String fieldValue(InspectedField field) {
+		Class<?> baseClass = field.getType().getType();
+		Object value = field.getObject(getBase());
+		
+		if(value == null) return field + "\nType : " + baseClass + "\nValue : null";
+		
+		if(baseClass.isPrimitive()) {
+			return field + "\nType : " + baseClass + "\nValue : " + value; 
+		}
+		
+		return field + "\n" + create(this, value);
+	}
 	
 	
 	

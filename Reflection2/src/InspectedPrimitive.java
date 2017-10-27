@@ -2,12 +2,12 @@
 public class InspectedPrimitive extends InspectedBaseObject{
 	
 	public InspectedPrimitive(Object obj){
-		super(null, obj);
+		super(obj, false);
 	}
 
 	public String toString(){
 		
-		return super.toString() +
+		return "Type : "+ getType().getName() +
 		"\nValue : " + getBase();
 	}
 }

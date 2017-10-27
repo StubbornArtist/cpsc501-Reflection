@@ -41,8 +41,9 @@ public class InspectedBaseObject {
 		if(objClass.isArray()){
 			return new InspectedArray(parent, obj);
 		}
-		
-		if(objClass.isPrimitive() || parent.hasReference(new InspectedClass(objClass))){
+			
+		if(!parent.isRecursive() || objClass.isPrimitive() 
+				|| parent.hasReference(new InspectedClass(objClass))){
 			return new InspectedPrimitive(obj);
 		}		
 		return new InspectedObject(parent, obj);

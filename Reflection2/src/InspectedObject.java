@@ -23,6 +23,10 @@ public class InspectedObject extends InspectedBaseObject {
 		
 		return temp;
 	}
+	
+	private InspectedBaseObject getSuperClass() {
+		return create(this, getType().getSuperClass());
+	}
 		
 	
 	private String fieldsToString() {
@@ -59,8 +63,7 @@ public class InspectedObject extends InspectedBaseObject {
 			result+= "\nInterfaces : " + StringExtensions.indent(interfaces);
 		}
 		if(getType().hasSuperClass()) {
-			InspectedBaseObject superClass = create(this, getType().getSuperClass());
-			result += "\nSuper : \n" + StringExtensions.indent(superClass.toString());
+			result += "\nSuper : \n" + StringExtensions.indent(getSuperClass().toString());
 		}
 		return result;
 	}

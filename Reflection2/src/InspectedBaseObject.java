@@ -31,13 +31,22 @@ public class InspectedBaseObject {
 	
 	public static InspectedBaseObject create(InspectedBaseObject parent, InspectedClass type){
 		if(!(parent == null) && parent.hasReference(type)){
-			return new InspectedBaseObject(parent, type);
+			return new InspectedPrimitive(parent.getBase());
 		}
 		
 		return new InspectedObject(parent, type);
 	}
 	
-	
+	public static InspectedBaseObject create(InspectedBaseObject parent, InspectedField field) {
+		Class<?> baseClass = field.getType().getType();
+		Object value = field.getObject(parent.getBase());
+		
+		if(baseClass.isPrimitive()) {
+			return new InspectedPrimitive(value);
+		}
+		
+		return create(parent, value);
+	}
 	
 	public static InspectedBaseObject create(InspectedBaseObject parent, Object obj){
 		

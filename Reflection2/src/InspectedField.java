@@ -16,6 +16,10 @@ public class InspectedField extends InspectedMember{
 		return new InspectedClass(base.getType());
 	}
 	
+	public String getName() {
+		return base.getName();
+	}
+	
 	public Field getField() {
 		return base;
 	}
@@ -30,6 +34,12 @@ public class InspectedField extends InspectedMember{
 		}	
 	}
 	
-	
-
+	@Override
+	public boolean equals(Object other) {
+		if(other == null || !(other instanceof InspectedField)) 
+			return false;
+		
+		return ((InspectedField)other).getField().equals(base);
+		
+	}
 }

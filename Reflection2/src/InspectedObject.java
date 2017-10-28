@@ -1,69 +1,83 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class InspectedObject extends InspectedBaseObject {
-		
-	public InspectedObject(Object obj, boolean recursive){
+
+	private ArrayList<InspectedBaseObject> interfaces;
+	private HashMap<String, InspectedBaseObject> fields;
+	private InspectedBaseObject superClass;
+
+	public InspectedObject(Object obj, boolean recursive) {
 		super(obj, recursive);
+		init();
 	}
-	
-	public InspectedObject(InspectedBaseObject parent, InspectedClass type){
+
+	public InspectedObject(InspectedBaseObject parent, InspectedClass type) {
 		super(parent, type);
+		init();
 	}
 
 	public InspectedObject(InspectedBaseObject parent, Object obj) {
 		super(parent, obj);
+		init();
 	}
-		
-	private ArrayList<InspectedBaseObject> getInterfaces(){
-	
+
+	private void init() {
+		interfaces = getInterfaces();
+		fields = getFields();
+		superClass = getSuperClass();
+	}
+
+	private ArrayList<InspectedBaseObject> getInterfaces() {
+
 		ArrayList<InspectedBaseObject> temp = new ArrayList<InspectedBaseObject>();
-		for(InspectedClass c : getType().getInterfaces()){
+		for (InspectedClass c : getType().getInterfaces()) {
 			temp.add(create(this, c));
 		}
-		
+
 		return temp;
 	}
-	
+
 	private InspectedBaseObject getSuperClass() {
-		return create(this, getType().getSuperClass());
+		if (getType().hasSuperClass())
+			return create(this, getType().getSuperClass());
+		return null;
 	}
-		
-	
+
+	private HashMap<String, InspectedBaseObject> getFields() {
+
+		HashMap<String, InspectedBaseObject> pairs = new HashMap<String, InspectedBaseObject>();
+		InspectedClass objClass = getType();
+		for (InspectedField f : objClass.getFields()) {
+			InspectedBaseObject obj = create(this, f);
+			pairs.put(f.getName(), obj);
+		}
+
+		return pairs;
+	}
+
 	private String fieldsToString() {
 		String result = "\n\n";
-		for(InspectedField f : getType().getFields()) {
-			result += fieldValue(f);
-			result += "\n\n";
+		for (InspectedField f : getType().getFields()) {
+			InspectedBaseObject val = fields.get(f.getName());
+			result += f + "\n" + val + "\n\n";
 		}
 		return result;
 	}
-	
-	
-	private String fieldValue(InspectedField field) {
-		Class<?> baseClass = field.getType().getType();
-		Object value = field.getObject(getBase());
-		
-		if(value == null) return field + "\nType : " + baseClass + "\nValue : null";
-		
-		if(baseClass.isPrimitive()) {
-			return field + "\nType : " + baseClass + "\nValue : " + value; 
-		}
-		
-		return field + "\n" + create(this, value);
-	}
-	
+
 	@Override
-	public String toString(){
+	public String toString() {
 		String result = super.toString();
-		if(getType().hasFields()) {
-			result+= "\nFields : " + StringExtensions.indent(fieldsToString());
+		if (!fields.isEmpty()) {
+			String fieldStr = fieldsToString();
+			result += "\nFields : " + StringExtensions.indent(fieldStr);
 		}
-		if(getType().hasInterfaces()) {
-			String interfaces = StringExtensions.lineSeperatedString(getInterfaces());
-			result+= "\nInterfaces : " + StringExtensions.indent(interfaces);
+		if (!interfaces.isEmpty()) {
+			String interfaceStr = StringExtensions.lineSeperatedString(interfaces);
+			result += "\nInterfaces : " + StringExtensions.indent(interfaceStr);
 		}
-		if(getType().hasSuperClass()) {
-			result += "\nSuper : \n" + StringExtensions.indent(getSuperClass().toString());
+		if (!(superClass == null)) {
+			result += "\nSuper : \n" + StringExtensions.indent(superClass.toString());
 		}
 		return result;
 	}

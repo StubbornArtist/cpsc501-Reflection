@@ -28,7 +28,7 @@ public class InspectedObject extends InspectedBaseObject {
 		superClass = getSuperClass();
 	}
 
-	private ArrayList<InspectedBaseObject> getInterfaces() {
+	public ArrayList<InspectedBaseObject> getInterfaces() {
 
 		ArrayList<InspectedBaseObject> temp = new ArrayList<InspectedBaseObject>();
 		for (InspectedClass c : getType().getInterfaces()) {
@@ -38,13 +38,13 @@ public class InspectedObject extends InspectedBaseObject {
 		return temp;
 	}
 
-	private InspectedBaseObject getSuperClass() {
+	public InspectedBaseObject getSuperClass() {
 		if (getType().hasSuperClass())
 			return create(this, getType().getSuperClass());
 		return null;
 	}
 
-	private HashMap<String, InspectedBaseObject> getFields() {
+	public HashMap<String, InspectedBaseObject> getFields() {
 
 		HashMap<String, InspectedBaseObject> pairs = new HashMap<String, InspectedBaseObject>();
 		InspectedClass objClass = getType();

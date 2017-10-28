@@ -23,11 +23,15 @@ public class InspectedPrimitive extends InspectedBaseObject{
 		primitiveType = unwrap(obj.getClass());
 	}
 	
-	public Class<?> unwrap(Class<?> wrapperClass){
+	private Class<?> unwrap(Class<?> wrapperClass){
 		if(primitiveMap.containsKey(wrapperClass)) {
 			return primitiveMap.get(wrapperClass);
 		}
 		return wrapperClass;
+	}
+	
+	public Class<?> getPrimitiveType(){
+		return primitiveType;
 	}
 
 	public String toString(){

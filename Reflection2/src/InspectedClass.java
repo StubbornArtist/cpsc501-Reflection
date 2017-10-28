@@ -44,22 +44,6 @@ public class InspectedClass {
 		return base.getSuperclass() != null;
 	}
 	
-	public boolean hasInterfaces() {
-		return base.getInterfaces().length > 0;
-	}
-	
-	public boolean hasFields() {
-		return base.getDeclaredFields().length > 0;
-	}
-	
-	public boolean hasMethods() {
-		return methods.size() > 0;
-	}
-	
-	public boolean hasConstructors() {
-		return constructors.size() > 0;
-	}
-	
 	public InspectedClass getSuperClass(){
 		Class<?> superClass = base.getSuperclass();		
 		return new InspectedClass(superClass);
@@ -98,11 +82,11 @@ public class InspectedClass {
 	public String toString(){
 		String result = "Type : " + base.getName();
 		
-		if(hasMethods()) {
+		if(!methods.isEmpty()) {
 			String methodString = StringExtensions.lineSeperatedString(methods);
 			result += "\nMethods : " + StringExtensions.indent(methodString);
 		}
-		if(hasConstructors()) {
+		if(!constructors.isEmpty()) {
 			String constructorString = StringExtensions.lineSeperatedString(constructors);
 			result += "\nConstructors : " + StringExtensions.indent(constructorString);
 		}	

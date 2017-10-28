@@ -95,11 +95,7 @@ public class InspectedClassTest {
 			}
 			
 			assertTrue(exists);
-		}	
-		
-		
-		
-		
+		}		
 	}
 	
 	@Test
@@ -110,6 +106,26 @@ public class InspectedClassTest {
 		InspectedClass i = new InspectedClass(exClass.getClass());
 		
 		assertEquals(i.getSuperClass().getType(), superClass);	
+	}
+	
+	@Test
+	public void testHasSuperClassNoSuperClass() {
+		assertFalse(new InspectedClass(Object.class).hasSuperClass());
+	}
+	
+	@Test
+	public void testHasSuperClass() {
+		assertTrue(new InspectedClass(Integer.class).hasSuperClass());	
+	}
+	
+	@Test
+	public void testEqualOnEqualClasses() {
+		assertEquals(new InspectedClass(Object.class), new InspectedClass(Object.class));
+	}
+	
+	@Test
+	public void testEqualOnUnequalClasses() {
+		assertNotEquals(new InspectedClass(Object.class), new InspectedClass(Integer.class));
 	}
 	
 	

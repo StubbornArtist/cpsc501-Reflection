@@ -18,8 +18,12 @@ public class InspectedFieldTest {
 			assertEquals(fi.getObject(exClass), f.get(exClass));
 			
 		}
-		catch(NoSuchFieldException e) {}
-		catch(IllegalAccessException e) {}
+		catch(NoSuchFieldException e) {
+			fail();
+		}
+		catch(IllegalAccessException e) {
+			fail();
+		}
 		
 	}
 	
@@ -34,7 +38,37 @@ public class InspectedFieldTest {
 			
 			fi.getObject(exClass2);			
 		}
-		catch(NoSuchFieldException e) {}
+		catch(NoSuchFieldException e) {
+			
+			fail();
+		}
+		
+	}
+	
+	@Test
+	public void testEqualsEqualFields() {
+		try {
+			Field f1 = Integer.class.getDeclaredField("MAX_VALUE");
+			Field f2 = Integer.class.getDeclaredField("MAX_VALUE");
+			assertEquals(new InspectedField(f1), new InspectedField(f2));
+		}
+		catch(NoSuchFieldException e) {
+			
+			fail();
+		}
+		
+	}
+	
+	@Test
+	public void testEqualsUnequalFields() {
+		try {
+			Field f1 = Integer.class.getDeclaredField("MAX_VALUE");
+			Field f2 = Integer.class.getDeclaredField("MIN_VALUE");
+			assertNotEquals(new InspectedField(f1), new InspectedField(f2));
+		}
+		catch(NoSuchFieldException e) {
+			fail();
+		}
 		
 	}
 	

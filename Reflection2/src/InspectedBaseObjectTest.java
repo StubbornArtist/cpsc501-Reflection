@@ -10,17 +10,7 @@ public class InspectedBaseObjectTest {
 		assertEquals(obj.getClass(), InspectedObject.class);
 			
 	}
-	
-	
-	@Test
-	public void testCreateFromPrimitive() {	
 		
-		InspectedBaseObject obj = InspectedBaseObject.create(1, false);		
-		assertEquals(obj.getClass(), InspectedPrimitive.class);
-			
-	}
-	
-	
 	@Test
 	public void testCreateFromArray() {
 		InspectedBaseObject obj = InspectedBaseObject.create(new int [] {}, false);
